@@ -1,5 +1,6 @@
 import isEmpty from "../utils/isEmpty.js";
 import userService from '../service/user-service.js';
+import config from "../config/index.js";
 
 class UserController {
     async registration(req, res, next) {
@@ -14,7 +15,7 @@ class UserController {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
             })
-            
+
             return res.json(userData);
 
         } catch (e) {
@@ -43,9 +44,11 @@ class UserController {
 
     async activate(req, res, next) {
         try {
-            
+            const activationLink = req.params.link;
+            await userService.activate(activationLink);
+            return res.redirect(config.clientUrl);
         } catch (e) {
-            
+            console.error(e)
         }
     }
 

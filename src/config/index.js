@@ -3,6 +3,7 @@ import 'dotenv/config'
 export default {
     port: process.env.PORT,
     apiUrl: process.env.API_URL,
+    clientUrl: process.env.CLIENT_URL,
     db: {
         client: process.env.DB_CLIENT,
         database: process.env.DB_DATABASE,

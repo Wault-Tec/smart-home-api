@@ -31,6 +31,8 @@ class UserService {
         if(!user) {
             throw new Error('Некорректная ссылка активации')
         }
+
+        await User.query().findById(user.id).patch({isActivated: true});
     }
 }
 
