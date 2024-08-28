@@ -1,7 +1,7 @@
-import app, { start } from './middlewares/express.js';
-import { dbConnect } from './middlewares/objection.js';
+import app, { start } from './appServices/express.js';
+import { dbConnect } from './appServices/objection.js';
 
-start()
-dbConnect()
+start();
+dbConnect();
 
-export default app
+export default app;

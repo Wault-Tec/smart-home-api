@@ -14,7 +14,7 @@ export default class User extends Model {
                 email: {type: 'string'},
                 password: {type: 'string'},
                 isActivated: {type: 'boolean'},
-                activationLink: {type: 'string'},
+                activationLink: {type: 'string'}
             }
         }
     }

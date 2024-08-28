@@ -1,44 +1,56 @@
 import isEmpty from "../utils/isEmpty.js";
 import userService from '../service/user-service.js';
 import config from "../config/index.js";
+import { validationResult } from "express-validator";
+import ApiError from "../exceptions/api-error.js";
 
 class UserController {
     async registration(req, res, next) {
         try {
+            const errors = validationResult(req);
+            if(!errors.isEmpty()) {
+                return next(ApiError.BadRequest('Invalid email or password', errors.array()));
+            }
             const {email, password} = req.body;
-
-            if (isEmpty(email) || isEmpty(password)) throw new Error('All fields must be fill');
-
             const userData = await userService.registration(email, password);
 
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
                 httpOnly: true,
-            })
+            });
 
             return res.json(userData);
 
         } catch (e) {
-            await res.json({
-                success: false,
-                message: e.message || e,
-            });
+            next(e);
         }
     }
 
     async login(req, res, next) {
         try {
-            
+            const  { email, password } = req.body;
+            const userData = await userService.login(email, password);
+
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+
+            return res.json(userData);
         } catch (e) {
-            
+            next(e);
         }
     }
 
     async logout(req, res, next) {
         try {
+            const { refreshToken } = req.cookies;
+            const token = await userService.logout(refreshToken);
+            res.clearCookie('refreshToken');
             
+            return res.json(token);
         } catch (e) {
-            
+            next(e);
         }
     }
 
@@ -48,25 +60,36 @@ class UserController {
             await userService.activate(activationLink);
             return res.redirect(config.clientUrl);
         } catch (e) {
-            console.error(e)
+            next(e);
         }
     }
 
     async refresh(req, res, next) {
         try {
-            
+            const { refreshToken } = req.cookies;
+
+            const userData = await userService.refresh(refreshToken);
+
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 30 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+
+            return res.json(userData);
+
         } catch (e) {
-            
+            next(e);
         }
     }
 
     async getUsers(req, res, next) {
         try {
-            res.json(['ss', '122'])
+            const users = await userService.getAllUsers();
+            res.json(users);
         } catch (e) {
-            
+            next(e);
         }
     }
 }
 
-export default new UserController()
+export default new UserController();

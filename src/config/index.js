@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config';
 
 export default {
     port: process.env.PORT,
@@ -24,4 +24,4 @@ export default {
         user: process.env.SMTP_USER,
         password: process.env.SMTP_PASSWORD
     }
-}
+};
