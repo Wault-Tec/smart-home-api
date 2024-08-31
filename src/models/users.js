@@ -10,7 +10,6 @@ export default class User extends Model {
             type: 'object',
             required: ['email', 'password'],
             properties: {
-                id: {type: 'integer'},
                 email: {type: 'string'},
                 password: {type: 'string'},
                 isActivated: {type: 'boolean'},

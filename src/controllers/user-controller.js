@@ -1,5 +1,4 @@
-import isEmpty from "../utils/isEmpty.js";
-import userService from '../service/user-service.js';
+import UserService from '../service/user-service.js';
 import config from "../config/index.js";
 import { validationResult } from "express-validator";
 import ApiError from "../exceptions/api-error.js";
@@ -11,8 +10,8 @@ class UserController {
             if(!errors.isEmpty()) {
                 return next(ApiError.BadRequest('Invalid email or password', errors.array()));
             }
-            const {email, password} = req.body;
-            const userData = await userService.registration(email, password);
+            const { email, password } = req.body;
+            const userData = await UserService.registration(email, password);
 
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -29,7 +28,7 @@ class UserController {
     async login(req, res, next) {
         try {
             const  { email, password } = req.body;
-            const userData = await userService.login(email, password);
+            const userData = await UserService.login(email, password);
 
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -45,7 +44,7 @@ class UserController {
     async logout(req, res, next) {
         try {
             const { refreshToken } = req.cookies;
-            const token = await userService.logout(refreshToken);
+            const token = await UserService.logout(refreshToken);
             res.clearCookie('refreshToken');
             
             return res.json(token);
@@ -57,7 +56,7 @@ class UserController {
     async activate(req, res, next) {
         try {
             const activationLink = req.params.link;
-            await userService.activate(activationLink);
+            await UserService.activate(activationLink);
             return res.redirect(config.clientUrl);
         } catch (e) {
             next(e);
@@ -68,7 +67,7 @@ class UserController {
         try {
             const { refreshToken } = req.cookies;
 
-            const userData = await userService.refresh(refreshToken);
+            const userData = await UserService.refresh(refreshToken);
 
             res.cookie('refreshToken', userData.refreshToken, {
                 maxAge: 30 * 24 * 60 * 60 * 1000,
@@ -84,7 +83,7 @@ class UserController {
 
     async getUsers(req, res, next) {
         try {
-            const users = await userService.getAllUsers();
+            const users = await UserService.getAllUsers();
             res.json(users);
         } catch (e) {
             next(e);
