@@ -16,7 +16,7 @@ app.use(errorHandler);
 export const start = async () => {
     try {
         app.listen(config.port, () => {
-            console.log(`Server started on PORT ${config.port}`)
+            console.log(`Server started on PORT ${config.port}`);
         })
     } catch (e) {
         console.error(`Error : ${e}`);
