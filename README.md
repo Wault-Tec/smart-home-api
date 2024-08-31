@@ -3,6 +3,9 @@
 #### In the project directory, you can run:
 `npm i npm run dev`
 
+#### To create databases you can run:
+`npm run migrate`
+
 ### Used technologies:
 
 - Node.js
